@@ -1,0 +1,13 @@
+{
+  "name": "alibaba-product-scraper-examples",
+  "private": true,
+  "type": "module",
+  "description": "Examples for https://apify.com/rel8ble/alibaba-product-search-scraper",
+  "scripts": {
+    "start": "node example.js"
+  },
+  "dependencies": {
+    "apify-client": "^2.9.0"
+  },
+  "license": "MIT"
+}

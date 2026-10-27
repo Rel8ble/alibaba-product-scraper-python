@@ -45,6 +45,24 @@ const { items } = await client.dataset(run.defaultDatasetId).listItems();
 console.log(items.length, 'products');
 ```
 
+## Plain HTTP (curl, Google Apps Script, anything)
+
+One call runs the actor and returns the results. Use `format=csv` for a spreadsheet, `format=json` for code:
+
+```bash
+curl -X POST "https://api.apify.com/v2/acts/rel8ble~alibaba-product-search-scraper/run-sync-get-dataset-items?format=csv"   -H "Authorization: Bearer <YOUR_APIFY_TOKEN>"   -H "Content-Type: application/json"   -d '{"searchTerms":["yoga mat"],"maxResultsPerSearch":100,"verifiedSuppliersOnly":true,"maxMoq":50}'   -o results.csv
+```
+
+The sync endpoint waits up to 5 minutes; for bigger runs use the clients above (they wait as long as needed). [`example.js`](example.js) is a runnable Node.js version that writes `alibaba_products.csv` (`npm install`, then `APIFY_TOKEN=... node example.js`).
+
+## No code: n8n, Make, Zapier, Google Sheets
+
+- **n8n**: import [`n8n/workflow.json`](n8n/workflow.json) (Workflows > Import from file), replace `YOUR_APIFY_TOKEN`, and add a Google Sheets "Append or update row" node after it, matched on `productId` so weekly runs don't create duplicates. It uses n8n's built-in HTTP Request node, so no community node is needed (the official Apify node, `@apify/n8n-nodes-apify`, works too).
+- **Make**: Apify app > "Run an Actor" (actor `rel8ble/alibaba-product-search-scraper`, wait for finish on, input JSON as above) > Apify "Get Dataset Items" > Google Sheets "Add a Row" or your CRM module.
+- **Zapier**: Apify app > "Run Actor" action (or the "Finished Actor Run" trigger on a scheduled run) > "Fetch Dataset Items" > Google Sheets / HubSpot / Airtable.
+- **Google Sheets only**: run it from the [Store page](https://apify.com/rel8ble/alibaba-product-search-scraper) form, download CSV and import. Useful columns: title, priceText, moq, minOrderValue, supplierName, supplierYears, verifiedSupplier, supplierRating, url.
+- **AI agents**: the Apify MCP server (https://mcp.apify.com) lets Claude, ChatGPT or Cursor call `rel8ble/alibaba-product-search-scraper` as a tool.
+
 ## Input
 
 | Field | Default | What it does |
