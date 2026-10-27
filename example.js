@@ -26,6 +26,5 @@ const rows = items
 
 const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
 const header = Object.keys(rows[0] ?? {});
-writeFileSync('alibaba_products.csv', [header.join(','), ...rows.map((row) => header.map((h) => esc(row[h])).join(','))].join('
-'));
+writeFileSync('alibaba_products.csv', [header.join(','), ...rows.map((row) => header.map((h) => esc(row[h])).join(','))].join('\n'));
 console.log(`${rows.length} rows -> alibaba_products.csv`);
